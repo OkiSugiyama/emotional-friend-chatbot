@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "release": "rebuild-mvp",
+  "policy": {
+    "prohibitQuarantinedP0": true,
+    "blockingStatuses": ["pending", "blocked"]
+  },
+  "gates": [
+    {
+      "id": "RG-01",
+      "requirement": "All P0 requirements have an owner and a passing acceptance artifact.",
+      "owner": "QA lead",
+      "status": "pending",
+      "requiredEvidence": ["P0 traceability report", "named requirement owners", "passing artifact links"],
+      "evidence": [],
+      "notes": "Traceability structure exists; implementation-owner assignment and passing artifacts remain outstanding."
+    },
+    {
+      "id": "RG-02",
+      "requirement": "Frontend and backend production builds pass in CI.",
+      "owner": "Engineering lead",
+      "status": "pending",
+      "requiredEvidence": ["frontend production build log", "backend production build log", "immutable CI run URL"],
+      "evidence": [],
+      "notes": "Awaiting a release-candidate CI run."
+    },
+    {
+      "id": "RG-03",
+      "requirement": "Unit, integration, and end-to-end suites pass with no quarantined P0 scenario.",
+      "owner": "QA lead",
+      "status": "pending",
+      "requiredEvidence": ["unit report", "integration report", "end-to-end report", "no-quarantine validation"],
+      "evidence": [],
+      "notes": "Full implementation suites do not exist yet."
+    },
+    {
+      "id": "RG-04",
+      "requirement": "Firestore authorization tests pass.",
+      "owner": "Security engineer",
+      "status": "pending",
+      "requiredEvidence": ["Firebase emulator report", "owner/non-owner/unauthenticated matrix", "forged-ID results"],
+      "evidence": [],
+      "notes": "Static rules checks exist; emulator authorization evidence is still required."
+    },
+    {
+      "id": "RG-05",
+      "requirement": "WCAG 2.2 AA automated and manual checks pass for P0 journeys.",
+      "owner": "Accessibility reviewer",
+      "status": "pending",
+      "requiredEvidence": ["automated accessibility report", "keyboard review", "screen-reader review", "reflow and contrast review"],
+      "evidence": [],
+      "notes": "Manual checklist exists and must be executed against the release candidate."
+    },
+    {
+      "id": "RG-06",
+      "requirement": "Security and privacy review has no unresolved critical/high finding.",
+      "owner": "Security/privacy reviewer",
+      "status": "pending",
+      "requiredEvidence": ["security report", "privacy egress report", "dependency scan", "signed finding disposition"],
+      "evidence": [],
+      "notes": "Static contract checks are not a substitute for the independent review."
+    },
+    {
+      "id": "RG-07",
+      "requirement": "Safety evaluation has no unresolved critical failure.",
+      "owner": "Safety reviewer",
+      "status": "pending",
+      "requiredEvidence": ["versioned safety evaluation", "reviewed policy", "reviewed regional resource catalog", "signed failure disposition"],
+      "evidence": [],
+      "notes": "Final safety wording and reviewed resources remain open."
+    },
+    {
+      "id": "RG-08",
+      "requirement": "Model/prompt version, rollback procedure, rate limits, and cost alerting are configured.",
+      "owner": "Operations lead",
+      "status": "pending",
+      "requiredEvidence": ["model and prompt version", "rollback rehearsal", "rate-limit verification", "cost-alert verification"],
+      "evidence": [],
+      "notes": "Environment templates are present; deployed configuration evidence is required."
+    },
+    {
+      "id": "RG-09",
+      "requirement": "Privacy notice, terms, and support contact are available.",
+      "owner": "Product/legal owner",
+      "status": "pending",
+      "requiredEvidence": ["deployed privacy URL", "deployed terms URL", "support contact", "legal approval"],
+      "evidence": [],
+      "notes": "Availability and approval must be verified in the release environment."
+    },
+    {
+      "id": "RG-10",
+      "requirement": "Production smoke test passes without use of developer credentials in the browser.",
+      "owner": "Release manager",
+      "status": "pending",
+      "requiredEvidence": ["clean-browser smoke report", "production readiness response", "client bundle secret scan", "release telemetry evidence"],
+      "evidence": [],
+      "notes": "Must run against the production release candidate with non-developer test credentials."
+    }
+  ]
+}

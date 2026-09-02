@@ -1,0 +1,68 @@
+# Three independent jobs rather than one sequential job.
+#
+# The test suite is expected to fail, on purpose. The safety evaluation records
+# unresolved critical mismatches and its acceptance gate refuses to pass while
+# they stand; a clone without the evaluated routing policy fails the policy
+# precondition instead. See README "Status".
+#
+# Run sequentially, that expected failure would stop the build and the Firestore
+# authorization tests from ever running, so the repository would never show that
+# it builds or that its rules hold. Split, each result stands on its own and a
+# reader can see exactly which part is red and why.
+
+name: Rebuild CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm run typecheck
+      - run: npm run build
+
+  firestore-rules:
+    name: firestore-rules
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # The Firestore emulator is a Java process.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npm run test:rules
+
+  test-suite:
+    name: test-suite (expected red)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test

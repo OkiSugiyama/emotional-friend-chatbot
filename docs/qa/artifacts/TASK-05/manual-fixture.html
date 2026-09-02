@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TASK-05 synthetic manual fixture</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import React from "react";
+      import { createRoot } from "react-dom/client";
+      import AppView from "/src/components/AppView.tsx";
+
+      const createdAt = "2026-08-26T12:00:00.000Z";
+      const completedAt = "2026-08-26T12:00:01.000Z";
+      const noOp = () => undefined;
+
+      function message(id, role, text, extra = {}) {
+        return {
+          id,
+          chatId: "chat-synthetic-001",
+          role,
+          text,
+          status: "complete",
+          clientRequestId: `request-${id}`,
+          createdAt,
+          completedAt,
+          emotionContext: null,
+          ...extra,
+        };
+      }
+
+      const syntheticUser = {
+        kind: "registered",
+        uid: "user-synthetic-001",
+        displayName: "Synthetic Reviewer",
+        email: "reviewer@example.test",
+      };
+      const baseChat = {
+        id: "chat-synthetic-001",
+        title: "Synthetic accessibility review",
+        titleSource: "user",
+        createdAt,
+        updatedAt: completedAt,
+        lastMessageAt: completedAt,
+        messages: [],
+      };
+      const baseView = {
+        session: "registered",
+        auth: { kind: "sign-in" },
+        user: syntheticUser,
+        chats: [baseChat],
+        activeChatId: baseChat.id,
+        deletingChatIds: [],
+        chatListStatus: "ready",
+        messageListStatus: "ready",
+        camera: { phase: "off", useEstimate: false },
+        connectionStatus: "online",
+        safetyRegions: [
+          { code: "GB", label: "United Kingdom" },
+          { code: "IE", label: "Ireland" },
+        ],
+        selectedSafetyRegion: null,
+        privacyHref: "/privacy",
+        termsHref: "/terms",
+      };
+
+      const state = new URLSearchParams(location.search).get("state") || "safety";
+      let view = baseView;
+      let expiryTransition = false;
+
+      if (state === "safety") {
+        const chat = {
+          ...baseChat,
+          messages: [
+            message("user-safety", "user", "[Synthetic immediate-risk fixture text]"),
+            message(
+              "assistant-safety",
+              "assistant",
+              "I’m glad you said something. Please contact local emergency services or a trusted person nearby now.",
+              { safetySupport: true },
+            ),
+          ],
+        };
+        view = { ...baseView, chats: [chat] };
+      } else if (state === "camera-denied") {
+        view = {
+          ...baseView,
+          camera: { phase: "denied", useEstimate: false },
+        };
+      } else if (state === "camera-sad") {
+        view = {
+          ...baseView,
+          camera: {
+            phase: "on",
+            useEstimate: true,
+            label: "sad",
+            confidenceBand: "medium",
+          },
+        };
+      } else if (state === "error") {
+        view = {
+          ...baseView,
+          messageListStatus: "error",
+          messageListError: "Synthetic safe error: this conversation could not be loaded.",
+        };
+      } else if (state === "inert") {
+        const chat = {
+          ...baseChat,
+          messages: [
+            message(
+              "user-inert",
+              "user",
+              "<img src=x onerror=alert('synthetic')> " + "X".repeat(300),
+            ),
+          ],
+        };
+        view = { ...baseView, chats: [chat] };
+      } else if (state === "expired") {
+        view = { ...baseView, session: "guest-expired", user: null };
+      } else if (state === "expiry-transition") {
+        view = {
+          ...baseView,
+          session: "guest",
+          user: {
+            kind: "guest",
+            uid: "guest-synthetic-001",
+            displayName: "Guest",
+            email: null,
+          },
+        };
+        expiryTransition = true;
+      } else if (state === "long") {
+        const chats = Array.from({ length: 20 }, (_, index) => ({
+          ...baseChat,
+          id: `chat-synthetic-${String(index + 1).padStart(3, "0")}`,
+          title: index === 0 ? "L".repeat(100) : `Synthetic conversation ${index + 1}`,
+          messages: index === 0
+            ? [
+                message("user-long", "user", "Synthetic long-content check."),
+                message(
+                  "assistant-long",
+                  "assistant",
+                  Array.from({ length: 12 }, (_, item) => `Synthetic paragraph ${item + 1}: ` + "wrapped content ".repeat(14)).join("\n\n"),
+                ),
+              ]
+            : [],
+        }));
+        view = {
+          ...baseView,
+          chats,
+          activeChatId: chats[0].id,
+          user: { ...syntheticUser, displayName: "Synthetic Reviewer Name ".repeat(4).trim() },
+        };
+      }
+
+      const root = createRoot(document.getElementById("root"));
+      let actions;
+      const render = () => root.render(React.createElement(AppView, { view, actions }));
+      actions = new Proxy(
+        {
+          onSetUseEstimate(value) {
+            view = { ...view, camera: { ...view.camera, useEstimate: value } };
+            render();
+          },
+          onSelectSafetyRegion(value) {
+            view = { ...view, selectedSafetyRegion: value };
+            render();
+          },
+        },
+        { get: (target, property) => target[property] || noOp },
+      );
+      render();
+      if (expiryTransition) {
+        window.setTimeout(() => {
+          view = { ...baseView, session: "guest-expired", user: null };
+          render();
+        }, 15000);
+      }
+    </script>
+  </body>
+</html>

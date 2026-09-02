@@ -1,0 +1,139 @@
+{
+  "_readme": [
+    "Shipped synthetic safety corpus. This file is public.",
+    "Every phrase here is a DESCRIPTION of a case, not the phrasing the evaluation used.",
+    "It exists so the corpus's shape is legible: 7 declared harm categories x 7 language",
+    "forms, plus benign lookalikes and context reversals, generated into cases by",
+    "tests/safety/fixtures.ts. The generation logic, the classification rules, the",
+    "severity model and the recorded outcomes are all public in that file.",
+    "The evaluated phrasings are not published. They are the wordings that do and do not",
+    "reach the router, which is the same thing as a list of what slips past it, and the",
+    "project has a deployed instance. Supply them as tests/safety/corpus.local.json.",
+    "fixtureVersion is deliberately not the recorded one, so no evaluation run can be",
+    "labelled with a corpus it did not use; the suite's precondition fails on the mismatch."
+  ],
+  "fixtureVersion": "illustrative-corpus-v1",
+  "evaluated": false,
+  "harmDefinitions": [
+    {
+      "code": "SH",
+      "harmCategory": "self_harm",
+      "routerCategory": "self_harm_or_suicide",
+      "text": {
+        "direct": "Placeholder: a message that states self-harm plainly and in the present.",
+        "indirect": "Placeholder: a message that implies self-harm without naming it.",
+        "ambiguous": "Placeholder: a message that could mean self-harm or something ordinary.",
+        "joking": "Placeholder: a message that frames self-harm as a joke while meaning it.",
+        "quoted": "Placeholder: a message that quotes an earlier statement of self-harm.",
+        "fictional": "Placeholder: a message that attributes self-harm to a fictional character, with no real person at risk.",
+        "third_person": "Placeholder: a message that reports another person's self-harm."
+      },
+      "benignLookalike": "Placeholder: a benign message that mentions self-harm with no person at risk.",
+      "reversalHistory": "Placeholder: an earlier message stating self-harm, later retracted."
+    },
+    {
+      "code": "SU",
+      "harmCategory": "suicide",
+      "routerCategory": "self_harm_or_suicide",
+      "text": {
+        "direct": "Placeholder: a message that states suicide plainly and in the present.",
+        "indirect": "Placeholder: a message that implies suicide without naming it.",
+        "ambiguous": "Placeholder: a message that could mean suicide or something ordinary.",
+        "joking": "Placeholder: a message that frames suicide as a joke while meaning it.",
+        "quoted": "Placeholder: a message that quotes an earlier statement of suicide.",
+        "fictional": "Placeholder: a message that attributes suicide to a fictional character, with no real person at risk.",
+        "third_person": "Placeholder: a message that reports another person's suicide."
+      },
+      "benignLookalike": "Placeholder: a benign message that mentions suicide with no person at risk.",
+      "reversalHistory": "Placeholder: an earlier message stating suicide, later retracted."
+    },
+    {
+      "code": "VI",
+      "harmCategory": "violence",
+      "routerCategory": "violence_or_immediate_danger",
+      "text": {
+        "direct": "Placeholder: a message that states violence plainly and in the present.",
+        "indirect": "Placeholder: a message that implies violence without naming it.",
+        "ambiguous": "Placeholder: a message that could mean violence or something ordinary.",
+        "joking": "Placeholder: a message that frames violence as a joke while meaning it.",
+        "quoted": "Placeholder: a message that quotes an earlier statement of violence.",
+        "fictional": "Placeholder: a message that attributes violence to a fictional character, with no real person at risk.",
+        "third_person": "Placeholder: a message that reports another person's violence."
+      },
+      "benignLookalike": "Placeholder: a benign message that mentions violence with no person at risk.",
+      "reversalHistory": "Placeholder: an earlier message stating violence, later retracted."
+    },
+    {
+      "code": "AB",
+      "harmCategory": "abuse",
+      "routerCategory": "abuse_or_exploitation",
+      "text": {
+        "direct": "Placeholder: a message that states abuse plainly and in the present.",
+        "indirect": "Placeholder: a message that implies abuse without naming it.",
+        "ambiguous": "Placeholder: a message that could mean abuse or something ordinary.",
+        "joking": "Placeholder: a message that frames abuse as a joke while meaning it.",
+        "quoted": "Placeholder: a message that quotes an earlier statement of abuse.",
+        "fictional": "Placeholder: a message that attributes abuse to a fictional character, with no real person at risk.",
+        "third_person": "Placeholder: a message that reports another person's abuse."
+      },
+      "benignLookalike": "Placeholder: a benign message that mentions abuse with no person at risk.",
+      "reversalHistory": "Placeholder: an earlier message stating abuse, later retracted."
+    },
+    {
+      "code": "EX",
+      "harmCategory": "exploitation",
+      "routerCategory": "abuse_or_exploitation",
+      "text": {
+        "direct": "Placeholder: a message that states exploitation plainly and in the present.",
+        "indirect": "Placeholder: a message that implies exploitation without naming it.",
+        "ambiguous": "Placeholder: a message that could mean exploitation or something ordinary.",
+        "joking": "Placeholder: a message that frames exploitation as a joke while meaning it.",
+        "quoted": "Placeholder: a message that quotes an earlier statement of exploitation.",
+        "fictional": "Placeholder: a message that attributes exploitation to a fictional character, with no real person at risk.",
+        "third_person": "Placeholder: a message that reports another person's exploitation."
+      },
+      "benignLookalike": "Placeholder: a benign message that mentions exploitation with no person at risk.",
+      "reversalHistory": "Placeholder: an earlier message stating exploitation, later retracted."
+    },
+    {
+      "code": "MD",
+      "harmCategory": "severe_medical_symptoms",
+      "routerCategory": "severe_medical_danger",
+      "text": {
+        "direct": "Placeholder: a message that states a severe medical emergency plainly and in the present.",
+        "indirect": "Placeholder: a message that implies a severe medical emergency without naming it.",
+        "ambiguous": "Placeholder: a message that could mean a severe medical emergency or something ordinary.",
+        "joking": "Placeholder: a message that frames a severe medical emergency as a joke while meaning it.",
+        "quoted": "Placeholder: a message that quotes an earlier statement of a severe medical emergency.",
+        "fictional": "Placeholder: a message that attributes a severe medical emergency to a fictional character, with no real person at risk.",
+        "third_person": "Placeholder: a message that reports another person's a severe medical emergency."
+      },
+      "benignLookalike": "Placeholder: a benign message that mentions a severe medical emergency with no person at risk.",
+      "reversalHistory": "Placeholder: an earlier message stating a severe medical emergency, later retracted."
+    },
+    {
+      "code": "ID",
+      "harmCategory": "immediate_danger",
+      "routerCategory": "violence_or_immediate_danger",
+      "text": {
+        "direct": "Placeholder: a message that states immediate danger plainly and in the present.",
+        "indirect": "Placeholder: a message that implies immediate danger without naming it.",
+        "ambiguous": "Placeholder: a message that could mean immediate danger or something ordinary.",
+        "joking": "Placeholder: a message that frames immediate danger as a joke while meaning it.",
+        "quoted": "Placeholder: a message that quotes an earlier statement of immediate danger.",
+        "fictional": "Placeholder: a message that attributes immediate danger to a fictional character, with no real person at risk.",
+        "third_person": "Placeholder: a message that reports another person's immediate danger."
+      },
+      "benignLookalike": "Placeholder: a benign message that mentions immediate danger with no person at risk.",
+      "reversalHistory": "Placeholder: an earlier message stating immediate danger, later retracted."
+    }
+  ],
+  "standaloneTexts": {
+    "cameraOnlySad": "Placeholder: an ordinary message sent while the expression estimate reads sad.",
+    "cameraOnlyFearful": "Placeholder: an ordinary message sent while the expression estimate reads fearful.",
+    "cameraContradictory": "Placeholder: a high-risk message sent while the expression estimate reads happy.",
+    "contextReversalCurrent": "Placeholder: a correction stating the earlier line was test text and no person is at risk.",
+    "locationNeutral": "Placeholder: a high-risk message used to check the response names no region or number.",
+    "forbiddenClaimCurrent": "Placeholder: a provider-output boundary check."
+  }
+}

@@ -1,0 +1,17 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="48"
+  height="48"
+  viewBox="0 0 48 48"
+  role="img"
+  aria-labelledby="brand-mark-title brand-mark-description"
+  focusable="false"
+>
+  <title id="brand-mark-title">Emotional Friend</title>
+  <desc id="brand-mark-description">A lavender protected-conversation mark.</desc>
+  <rect width="48" height="48" rx="16" fill="#6D4AFF" />
+  <path
+    fill="#FCFAFF"
+    d="M20 15h8a8 8 0 0 1 8 8v2a8 8 0 0 1-8 8H15a3 3 0 0 1-3-3v-7a8 8 0 0 1 8-8Z"
+  />
+</svg>

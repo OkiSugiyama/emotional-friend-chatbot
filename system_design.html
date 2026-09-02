@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotional Friend Chatbot - System Architecture</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            width: 95%;
+            min-height: 1000px;
+            background: white;
+            margin: 20px auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 36px;
+            font-weight: bold;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .architecture {
+            padding: 40px;
+            height: calc(100% - 160px);
+            position: relative;
+        }
+        
+        /* Component Boxes */
+        .component {
+            position: absolute;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 3px solid;
+            text-align: center;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+        
+        .component:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* Frontend Layer */
+        .frontend {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border-color: #d97706;
+            color: #92400e;
+        }
+        
+        /* API Layer */
+        .api {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: #047857;
+            color: white;
+        }
+        
+        /* Backend Services */
+        .backend {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-color: #1d4ed8;
+            color: white;
+        }
+        
+        /* External Services */
+        .external {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border-color: #6d28d9;
+            color: white;
+        }
+        
+        /* AI/ML Services */
+        .ai {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border-color: #b91c1c;
+            color: white;
+        }
+        
+        /* Database */
+        .database {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            border-color: #0e7490;
+            color: white;
+        }
+        
+        /* Positioning */
+        .react-app { top: 40px; left: 50px; width: 200px; height: 80px; }
+        .emotion-detection { top: 40px; left: 300px; width: 200px; height: 80px; }
+        .chat-interface { top: 40px; left: 550px; width: 200px; height: 80px; }
+        .firebase-auth { top: 40px; left: 800px; width: 200px; height: 80px; }
+        
+        .vercel-api { top: 180px; left: 200px; width: 180px; height: 70px; }
+        .node-backend { top: 180px; left: 420px; width: 180px; height: 70px; }
+        
+        .openai-api { top: 320px; left: 50px; width: 180px; height: 70px; }
+        .emotion-ai { top: 320px; left: 270px; width: 180px; height: 70px; }
+        .face-api { top: 320px; left: 490px; width: 180px; height: 70px; }
+        .python-ml { top: 320px; left: 710px; width: 180px; height: 70px; }
+        
+        .firestore { top: 460px; left: 200px; width: 180px; height: 70px; }
+        .firebase-storage { top: 460px; left: 420px; width: 180px; height: 70px; }
+        
+        .deployment { top: 600px; left: 350px; width: 200px; height: 70px; }
+        
+        /* Connection Lines */
+        .connection {
+            position: absolute;
+            background: #6b7280;
+            z-index: 1;
+        }
+        
+        .vertical { width: 3px; }
+        .horizontal { height: 3px; }
+        
+        /* Arrows */
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            z-index: 2;
+        }
+        
+        .arrow-down {
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid #6b7280;
+        }
+        
+        .arrow-right {
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 12px solid #6b7280;
+        }
+        
+        /* Legend */
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 2px solid #e5e7eb;
+        }
+        
+        .legend h3 {
+            margin: 0 0 15px 0;
+            color: #374151;
+            font-size: 16px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 10px;
+            border: 2px solid;
+        }
+        
+        /* Data Flow Labels */
+        .flow-label {
+            position: absolute;
+            background: rgba(255,255,255,0.9);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            z-index: 3;
+        }
+        
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .container {
+                width: 98%;
+                margin: 10px auto;
+                min-height: 800px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .header p {
+                font-size: 16px;
+            }
+            
+            .architecture {
+                padding: 20px;
+                height: calc(100% - 120px);
+            }
+            
+            .component {
+                padding: 15px;
+                font-size: 12px;
+            }
+            
+            /* Mobile Layout - Stack components vertically */
+            .react-app { top: 20px; left: 20px; width: calc(50% - 30px); height: 60px; }
+            .emotion-detection { top: 20px; right: 20px; width: calc(50% - 30px); height: 60px; }
+            .chat-interface { top: 90px; left: 20px; width: calc(50% - 30px); height: 60px; }
+            .firebase-auth { top: 90px; right: 20px; width: calc(50% - 30px); height: 60px; }
+            
+            .vercel-api { top: 170px; left: 20px; width: calc(50% - 30px); height: 60px; }
+            .node-backend { top: 170px; right: 20px; width: calc(50% - 30px); height: 60px; }
+            
+            .openai-api { top: 250px; left: 20px; width: calc(50% - 30px); height: 60px; }
+            .emotion-ai { top: 250px; right: 20px; width: calc(50% - 30px); height: 60px; }
+            .face-api { top: 320px; left: 20px; width: calc(50% - 30px); height: 60px; }
+            .python-ml { top: 320px; right: 20px; width: calc(50% - 30px); height: 60px; }
+            
+            .firestore { top: 400px; left: 20px; width: calc(50% - 30px); height: 60px; }
+            .firebase-storage { top: 400px; right: 20px; width: calc(50% - 30px); height: 60px; }
+            
+            .deployment { top: 480px; left: 20px; width: calc(100% - 40px); height: 60px; }
+            
+            /* Hide connection lines on mobile for cleaner look */
+            .connection, .arrow {
+                display: none;
+            }
+            
+            /* Hide flow labels on mobile */
+            .flow-label {
+                display: none;
+            }
+            
+            /* Mobile legend positioning */
+            .legend {
+                position: static;
+                margin: 20px;
+                width: calc(100% - 40px);
+            }
+            
+            .legend-item {
+                font-size: 11px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                width: 100%;
+                margin: 5px auto;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 15px;
+                border-radius: 10px 10px 0 0;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .header p {
+                font-size: 14px;
+            }
+            
+            .architecture {
+                padding: 15px;
+            }
+            
+            .component {
+                padding: 10px;
+                font-size: 11px;
+            }
+            
+            /* Stack all components in single column on very small screens */
+            .react-app, .emotion-detection, .chat-interface, .firebase-auth,
+            .vercel-api, .node-backend, .openai-api, .emotion-ai,
+            .face-api, .python-ml, .firestore, .firebase-storage,
+            .deployment {
+                position: static;
+                width: 100%;
+                height: 50px;
+                margin-bottom: 10px;
+                left: auto;
+                right: auto;
+                top: auto;
+            }
+            
+            .architecture {
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .legend {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .legend h3 {
+                font-size: 14px;
+            }
+            
+            .legend-item {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Emotional Friend Chatbot</h1>
+            <p>System Architecture & Data Flow Diagram</p>
+        </div>
+        
+        <div class="architecture">
+            <!-- Frontend Layer -->
+            <div class="component frontend react-app">
+                <div>React.js App</div>
+                <small>SPA Frontend</small>
+            </div>
+            
+            <div class="component frontend emotion-detection">
+                <div>Emotion Detection</div>
+                <small>Camera + Face API</small>
+            </div>
+            
+            <div class="component frontend chat-interface">
+                <div>Chat Interface</div>
+                <small>Messages & UI</small>
+            </div>
+            
+            <div class="component frontend firebase-auth">
+                <div>Authentication</div>
+                <small>Login/Signup</small>
+            </div>
+            
+            <!-- API Layer -->
+            <div class="component api vercel-api">
+                <div>Vercel API</div>
+                <small>/api/chatbot</small>
+            </div>
+            
+            <div class="component backend node-backend">
+                <div>Node.js Server</div>
+                <small>Express Backend</small>
+            </div>
+            
+            <!-- AI/ML Services -->
+            <div class="component external openai-api">
+                <div>OpenAI GPT-4</div>
+                <small>Conversational AI</small>
+            </div>
+            
+            <div class="component ai emotion-ai">
+                <div>Emotion CNN</div>
+                <small>PyTorch Model</small>
+            </div>
+            
+            <div class="component external face-api">
+                <div>Face-API.js</div>
+                <small>Browser ML</small>
+            </div>
+            
+            <div class="component ai python-ml">
+                <div>Python Scripts</div>
+                <small>ML Processing</small>
+            </div>
+            
+            <!-- Database Layer -->
+            <div class="component database firestore">
+                <div>Firestore DB</div>
+                <small>Chat History</small>
+            </div>
+            
+            <div class="component database firebase-storage">
+                <div>Firebase Storage</div>
+                <small>File Uploads</small>
+            </div>
+            
+            <!-- Deployment -->
+            <div class="component external deployment">
+                <div>Vercel Deployment</div>
+                <small>Production Hosting</small>
+            </div>
+            
+            <!-- Connection Lines -->
+            <!-- Frontend to API -->
+            <div class="connection vertical" style="left: 290px; top: 120px; height: 60px;"></div>
+            <div class="arrow arrow-down" style="left: 282px; top: 175px;"></div>
+            
+            <div class="connection vertical" style="left: 510px; top: 120px; height: 60px;"></div>
+            <div class="arrow arrow-down" style="left: 502px; top: 175px;"></div>
+            
+            <!-- API to AI Services -->
+            <div class="connection vertical" style="left: 140px; top: 250px; height: 70px;"></div>
+            <div class="arrow arrow-down" style="left: 132px; top: 315px;"></div>
+            
+            <div class="connection vertical" style="left: 360px; top: 250px; height: 70px;"></div>
+            <div class="arrow arrow-down" style="left: 352px; top: 315px;"></div>
+            
+            <div class="connection vertical" style="left: 580px; top: 250px; height: 70px;"></div>
+            <div class="arrow arrow-down" style="left: 572px; top: 315px;"></div>
+            
+            <div class="connection vertical" style="left: 800px; top: 250px; height: 70px;"></div>
+            <div class="arrow arrow-down" style="left: 792px; top: 315px;"></div>
+            
+            <!-- Backend to Database -->
+            <div class="connection vertical" style="left: 290px; top: 390px; height: 70px;"></div>
+            <div class="arrow arrow-down" style="left: 282px; top: 455px;"></div>
+            
+            <div class="connection vertical" style="left: 510px; top: 390px; height: 70px;"></div>
+            <div class="arrow arrow-down" style="left: 502px; top: 455px;"></div>
+            
+            <!-- Deployment connection -->
+            <div class="connection vertical" style="left: 450px; top: 530px; height: 70px;"></div>
+            <div class="arrow arrow-down" style="left: 442px; top: 595px;"></div>
+            
+            <!-- Data Flow Labels -->
+            <div class="flow-label" style="top: 140px; left: 250px;">HTTP Requests</div>
+            <div class="flow-label" style="top: 140px; left: 470px;">Chat Messages</div>
+            <div class="flow-label" style="top: 280px; left: 100px;">AI Response</div>
+            <div class="flow-label" style="top: 280px; left: 320px;">Emotion Data</div>
+            <div class="flow-label" style="top: 280px; left: 540px;">Face Detection</div>
+            <div class="flow-label" style="top: 280px; left: 760px;">ML Processing</div>
+            <div class="flow-label" style="top: 420px; left: 250px;">Store Chats</div>
+            <div class="flow-label" style="top: 420px; left: 470px;">Store Files</div>
+            <div class="flow-label" style="top: 560px; left: 410px;">Deploy</div>
+        </div>
+        
+        <!-- Legend -->
+        <div class="legend">
+            <h3>Component Types</h3>
+            <div class="legend-item">
+                <div class="legend-color frontend" style="border-color: #d97706;"></div>
+                <span>Frontend (React)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color api" style="border-color: #047857;"></div>
+                <span>API Layer</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color backend" style="border-color: #1d4ed8;"></div>
+                <span>Backend Services</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color ai" style="border-color: #b91c1c;"></div>
+                <span>AI/ML Services</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color external" style="border-color: #6d28d9;"></div>
+                <span>External APIs</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color database" style="border-color: #0e7490;"></div>
+                <span>Database Layer</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

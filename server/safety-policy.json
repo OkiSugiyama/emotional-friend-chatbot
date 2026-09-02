@@ -1,0 +1,49 @@
+{
+  "_readme": [
+    "Shipped high-risk routing policy. This file is public.",
+    "The pattern set here is ILLUSTRATIVE: one narrow, obvious phrase per category,",
+    "enough to exercise the routing path in a local demo.",
+    "It is NOT the set the versioned safety evaluation was run against.",
+    "The evaluated set is a deployment artifact, kept out of this repository so that",
+    "a tuned trigger set never enters the repository as the policy is corrected. Supply it",
+    "as server/safety-policy.local.json or via SAFETY_POLICY_PATH.",
+    "policyVersion is deliberately not 'safety-routing-v1'. Any evidence produced",
+    "with this file is labelled 'illustrative-v1', and the safety evaluation suite",
+    "fails on the mismatch rather than mislabelling a run.",
+    "responseText is the reviewed, location-neutral user-facing copy and is public",
+    "by design; it is what a person in crisis actually reads.",
+    "Each category carries a `sample` phrase that its own pattern must match. The loader enforces that, and tests use it instead of hardcoding a trigger literal, so no test source in this repository carries part of the trigger inventory.",
+    "persistentHelpText is the always-visible help panel's wording. It stays location-neutral even though the routed responses now name US resources: the panel is shown to every visitor including those outside the launch market, while a routed response only fires when a message indicates real risk."
+  ],
+  "policyVersion": "illustrative-v1",
+  "copyVersion": "us-conditional-v1",
+  "evaluated": false,
+  "categories": [
+    {
+      "category": "self_harm_or_suicide",
+      "pattern": "\\b(?:kill myself|end my life)\\b",
+      "responseText": "I’m really sorry you’re in this much pain. If you are in the US, you can call or text 988 to reach the Suicide and Crisis Lifeline, any time. If you may act now, contact local emergency services or ask a trusted person nearby to stay with you now. If you can, move away from anything you could use to hurt yourself. Emotional Friend is not monitored and cannot provide emergency care.",
+      "sample": "I am going to kill myself"
+    },
+    {
+      "category": "violence_or_immediate_danger",
+      "pattern": "\\b(?:hurt someone|immediate danger)\\b",
+      "responseText": "If you or someone else may be harmed now, contact local emergency services — 911 if you are in the US — or move to a safer place with a trusted person nearby. Emotional Friend is not monitored and cannot provide emergency care.",
+      "sample": "I am going to hurt someone right now"
+    },
+    {
+      "category": "abuse_or_exploitation",
+      "pattern": "\\b(?:being abused)\\b",
+      "responseText": "I’m sorry this is happening. If you are in immediate danger, contact local emergency services — 911 if you are in the US — or go to a safer place with someone you trust. What happened is not your fault. Emotional Friend is not monitored and cannot provide emergency care.",
+      "sample": "I am being abused at home"
+    },
+    {
+      "category": "severe_medical_danger",
+      "pattern": "\\b(?:severe chest pain)\\b",
+      "responseText": "This may need urgent medical attention. Contact local emergency services now — 911 if you are in the US — or ask someone nearby to help you get urgent medical care. Emotional Friend is not monitored and cannot provide emergency care.",
+      "sample": "I have severe chest pain right now"
+    }
+  ],
+  "locationNeutral": false,
+  "persistentHelpText": "If you or someone else may be harmed now, contact local emergency services or move to a safer place with a trusted person nearby. Emotional Friend is not monitored and cannot provide emergency care."
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "taskId": "TASK-04",
+  "observedAtUtc": "2026-08-26T19:46:36Z",
+  "syntheticOnly": true,
+  "capture": {
+    "browserBackendAvailable": false,
+    "networkObservationStatus": "unobserved",
+    "storageObservationStatus": "unobserved",
+    "sanitizedRequestCategoryCount": null,
+    "sanitizedOriginCount": null,
+    "rawVisualEgressCount": null,
+    "derivedVisualEgressCount": null,
+    "rawVisualPersistenceCount": null,
+    "derivedVisualPersistenceCount": null
+  },
+  "staticScopedReview": {
+    "cameraFilesReviewed": 4,
+    "directRawCameraNetworkSinkCount": 0,
+    "directRawCameraStorageSinkCount": 0,
+    "approvedCoarseRegisteredFieldsObserved": 3,
+    "approvedCoarseRegisteredFieldCategories": [
+      "camera notice version",
+      "camera notice acceptance timestamp",
+      "reply-tone setting"
+    ],
+    "summary": "Scoped source and deterministic repository assertions contain only approved coarse consent/settings writes, but this does not substitute for runtime capture."
+  },
+  "prohibitedArtifactCounts": {
+    "rawHar": 0,
+    "browserProfiles": 0,
+    "cookies": 0,
+    "tokens": 0,
+    "authorizationHeaders": 0,
+    "requestOrResponseBodies": 0,
+    "realScreenshots": 0,
+    "realPersonOrConversationOrHealthData": 0
+  },
+  "result": "blocked",
+  "summary": "Runtime egress and persistence remain unobserved; null counts are intentionally not represented as zero."
+}

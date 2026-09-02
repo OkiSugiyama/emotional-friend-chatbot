@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "taskId": "TASK-04",
+  "observedAtUtc": "2026-08-26T19:46:36Z",
+  "baseRevision": "2ab65bb4a593ff169c1c37dda6c87b62bead924c",
+  "syntheticOnly": true,
+  "commands": [
+    {
+      "sequence": 1,
+      "command": "node --version",
+      "exitCode": 0,
+      "summary": "v24.3.0"
+    },
+    {
+      "sequence": 2,
+      "command": "npm --version",
+      "exitCode": 0,
+      "summary": "11.4.2"
+    },
+    {
+      "sequence": 3,
+      "command": "npm ci --offline",
+      "exitCode": 0,
+      "counts": {
+        "packagesAdded": 511,
+        "packagesAudited": 512,
+        "vulnerabilitiesFound": 0,
+        "deprecationWarnings": 2
+      }
+    },
+    {
+      "sequence": 4,
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "counts": {
+        "diagnosticsReported": 0
+      }
+    },
+    {
+      "sequence": 5,
+      "command": "npm run test -- tests/unit/client-camera.test.ts tests/unit/client-emotion.test.ts tests/unit/client-session-lifecycle.test.ts tests/unit/client-firestore-repository.test.ts tests/accessibility/app-view.a11y.test.tsx",
+      "exitCode": 0,
+      "counts": {
+        "testFilesPassed": 5,
+        "testFilesFailed": 0,
+        "testsPassed": 19,
+        "testsFailed": 0,
+        "testsSkipped": 0
+      },
+      "durationSeconds": 1.18
+    },
+    {
+      "sequence": 6,
+      "command": "npm run build",
+      "exitCode": 0,
+      "counts": {
+        "modulesTransformed": 1909,
+        "buildWarnings": 1
+      }
+    },
+    {
+      "sequence": 7,
+      "command": "git status --short",
+      "exitCode": 0,
+      "counts": {
+        "statusEntries": 0
+      },
+      "summary": "Executed before evidence files were written, as command 7 in packet order."
+    },
+    {
+      "sequence": 8,
+      "command": "git diff --check",
+      "exitCode": 0,
+      "counts": {
+        "whitespaceErrors": 0
+      },
+      "summary": "Completed as the eighth and final packet acceptance command."
+    }
+  ]
+}

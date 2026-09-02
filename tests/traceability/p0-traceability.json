@@ -1,0 +1,320 @@
+{
+  "schemaVersion": 1,
+  "release": "rebuild-mvp",
+  "authorities": [
+    "docs/EMOTIONAL_FRIEND_REBUILD_REQUIREMENTS.md",
+    "UI Mockup/project/Handoff - Engineering Bundle.dc.html",
+    "UI Mockup/project/Screens - Soft Sanctuary.dc.html"
+  ],
+  "derivedImplementationArtifacts": ["src/types.ts"],
+  "requiredLayers": [
+    "unit",
+    "integration",
+    "security",
+    "accessibility",
+    "responsive",
+    "e2e"
+  ],
+  "scenarios": [
+    {
+      "id": "AC-001",
+      "risk": "high",
+      "scenario": "New visitor opens the application.",
+      "expectedResult": "Welcome screen offers Clerk sign-in, Clerk sign-up, and demo mode as operable controls; enabled email, Google, and recovery methods are available within Clerk.",
+      "requirementIds": ["AUTH-001", "AUTH-003", "AUTH-004", "AUTH-005", "GST-001", "PRIV-007"],
+      "layers": {
+        "unit": ["Clerk entry controls and guest mode are exposed"],
+        "integration": ["Firebase authentication adapter initializes without protected reads"],
+        "security": ["welcome surface exposes no server credential or raw provider error"],
+        "accessibility": ["all entry actions have names, focus, and logical order"],
+        "responsive": ["authentication shell reflows at 390px, 320px, and 200% zoom"],
+        "e2e": ["operate Google, email, sign-up, reset, and demo entry paths"]
+      }
+    },
+    {
+      "id": "AC-002",
+      "risk": "high",
+      "scenario": "User submits invalid registration data.",
+      "expectedResult": "Inline accessible validation identifies every correctable field; no account is created.",
+      "requirementIds": ["AUTH-002", "AUTH-007", "AUTH-008", "A11Y-005", "ERR-001", "ERR-003"],
+      "layers": {
+        "unit": ["email, password, confirmation, and repeated-submit validation"],
+        "integration": ["invalid form submission creates no Firebase account"],
+        "security": ["provider codes, stack traces, and secrets are not rendered"],
+        "accessibility": ["field errors use persistent labels and programmatic descriptions"],
+        "responsive": ["multi-line validation remains visible without horizontal scrolling"],
+        "e2e": ["submit each invalid registration class and observe no account creation"]
+      }
+    },
+    {
+      "id": "AC-003",
+      "risk": "critical",
+      "scenario": "Registered user refreshes after login.",
+      "expectedResult": "Auth state restores, only that user's recent chats load, and no duplicate chat is created.",
+      "requirementIds": ["AUTH-009", "CHT-003", "CHT-004", "SEC-002", "SEC-003"],
+      "layers": {
+        "unit": ["auth initialization blocks protected data state until restoration"],
+        "integration": ["Firebase auth restoration precedes Firestore chat loading"],
+        "security": ["restoration cannot read another principal's chats"],
+        "accessibility": ["authentication initialization and loading state are announced once"],
+        "responsive": ["restored application shell remains usable at supported widths"],
+        "e2e": ["login, refresh, and verify only owned chats with no duplicate"]
+      }
+    },
+    {
+      "id": "AC-004",
+      "risk": "high",
+      "scenario": "Guest enters demo mode.",
+      "expectedResult": "Temporary session is created, banner explains expiry, and no Firestore user data is written.",
+      "requirementIds": ["GST-001", "GST-002", "GST-005", "PRIV-004"],
+      "layers": {
+        "unit": ["guest schema and initial activity timestamp are created"],
+        "integration": ["guest storage persists locally with zero registered Firestore writes"],
+        "security": ["guest identity cannot address registered-user collections"],
+        "accessibility": ["demo banner is persistent, readable, and non-blocking"],
+        "responsive": ["banner and composer coexist at 320px and 390px"],
+        "e2e": ["enter demo mode and create the first local chat"]
+      }
+    },
+    {
+      "id": "AC-005",
+      "risk": "high",
+      "scenario": "Guest returns within 30 minutes.",
+      "expectedResult": "Chats/messages restore in order.",
+      "requirementIds": ["GST-003", "GST-004", "GST-007", "CHT-003", "CHT-004"],
+      "layers": {
+        "unit": ["29:59 boundary, portable timestamps, and deterministic ordering"],
+        "integration": ["reload restores versioned browser storage"],
+        "security": ["restoration validates untrusted local data before use"],
+        "accessibility": ["restored chats and messages retain programmatic order and ownership"],
+        "responsive": ["restored content remains operable at all target widths"],
+        "e2e": ["advance clock to 29:59, reload, and verify chronological restoration"]
+      }
+    },
+    {
+      "id": "AC-006",
+      "risk": "high",
+      "scenario": "Guest returns after 30 minutes of inactivity.",
+      "expectedResult": "Guest data is cleared, camera is off, and the welcome screen explains expiry.",
+      "requirementIds": ["GST-003", "GST-004", "GST-006", "GST-008", "EMO-005"],
+      "layers": {
+        "unit": ["30:00 expiry clears guest, in-memory, and camera state"],
+        "integration": ["browser storage and media timers are cleared together"],
+        "security": ["expiry never deletes or mutates registered-user data"],
+        "accessibility": ["expiry explanation receives appropriate focus and is understandable"],
+        "responsive": ["expiry actions remain visible at 320px and 200% zoom"],
+        "e2e": ["expire guest session and verify data removal plus camera shutdown"]
+      }
+    },
+    {
+      "id": "AC-007",
+      "risk": "critical",
+      "scenario": "User creates, renames, selects, and deletes chats.",
+      "expectedResult": "Each operation persists for that role, preserves ownership, and presents correct empty/next-chat state.",
+      "requirementIds": ["CHT-001", "CHT-002", "CHT-004", "CHT-005", "CHT-006", "CHT-007", "CHT-008", "CHT-009", "CHT-011", "SEC-003", "ERR-005"],
+      "layers": {
+        "unit": ["chat state, Unicode title limits, ordering, and stale-response cancellation"],
+        "integration": ["role-specific CRUD persistence and scalable cascade deletion"],
+        "security": ["forged IDs and cross-owner CRUD are denied"],
+        "accessibility": ["menus, dialogs, current state, and focus restoration are operable"],
+        "responsive": ["desktop sidebar and mobile drawer expose the same operations"],
+        "e2e": ["create, switch, rename, delete, and reload for registered and guest roles"]
+      }
+    },
+    {
+      "id": "AC-008",
+      "risk": "critical",
+      "scenario": "User sends valid text.",
+      "expectedResult": "One user message and one assistant result are created; pending state is visible and duplicates do not occur.",
+      "requirementIds": ["MSG-001", "MSG-002", "MSG-003", "MSG-004", "MSG-005", "MSG-006", "MSG-007", "MSG-008", "AI-009", "PERF-004"],
+      "layers": {
+        "unit": ["text limits, line breaks, key behavior, idempotency, and message states"],
+        "integration": ["API transaction persists exactly one user and assistant result"],
+        "security": ["schema, size, rate, safe rendering, and principal-scoped idempotency"],
+        "accessibility": ["ownership, pending state, and completed response are announced correctly"],
+        "responsive": ["multiline composer and mobile software keyboard retain send access"],
+        "e2e": ["send valid text and receive exactly one assistant result"]
+      }
+    },
+    {
+      "id": "AC-009",
+      "risk": "critical",
+      "scenario": "Provider times out after accepting the request.",
+      "expectedResult": "Inline retry is offered; retry with the same idempotency key does not duplicate the user message.",
+      "requirementIds": ["MSG-006", "MSG-009", "AI-012", "PERF-005", "PERF-009", "ERR-001", "ERR-002"],
+      "layers": {
+        "unit": ["timeout mapping, stable error state, and idempotency-key reuse"],
+        "integration": ["provider timeout followed by replay completes one transaction"],
+        "security": ["idempotency key is scoped and upstream details are redacted"],
+        "accessibility": ["inline failure is announced once and retry is keyboard operable"],
+        "responsive": ["retry remains adjacent to its message on narrow screens"],
+        "e2e": ["force timeout, retry, and verify the user message is not duplicated"]
+      }
+    },
+    {
+      "id": "AC-010",
+      "risk": "high",
+      "scenario": "User scrolls upward while a response arrives.",
+      "expectedResult": "Reading position is preserved and a return-to-latest control appears.",
+      "requirementIds": ["MSG-011", "A11Y-002", "A11Y-006"],
+      "layers": {
+        "unit": ["near-bottom threshold, anchor preservation, and unread count"],
+        "integration": ["response completion does not overwrite user scroll intent"],
+        "security": ["new response continues to use the inert text renderer"],
+        "accessibility": ["return control has a name and response arrival does not steal focus"],
+        "responsive": ["return control remains unobscured on desktop and mobile"],
+        "e2e": ["scroll upward, deliver a response, and activate return to latest"]
+      }
+    },
+    {
+      "id": "AC-011",
+      "risk": "critical",
+      "scenario": "User grants camera permission.",
+      "expectedResult": "Controlled local model loads, video starts, estimate is labeled as uncertain, and no frame is uploaded.",
+      "requirementIds": ["EMO-002", "EMO-003", "EMO-004", "EMO-006", "EMO-008", "EMO-009", "EMO-011", "EMO-012", "EMO-013", "PRIV-001", "PRIV-002"],
+      "layers": {
+        "unit": ["canonical normalization, confidence threshold, stability, consent, and context toggle"],
+        "integration": ["deterministic local model loads and API payload uses the allowlisted metadata"],
+        "security": ["network capture proves no frame, audio, landmark, embedding, or biometric egress"],
+        "accessibility": ["camera state, estimate uncertainty, and toggle are programmatically exposed"],
+        "responsive": ["desktop panel and mobile sheet respect preview height constraints"],
+        "e2e": ["grant permission, load model, show estimate, and toggle reply context"]
+      }
+    },
+    {
+      "id": "AC-012",
+      "risk": "high",
+      "scenario": "User denies camera permission.",
+      "expectedResult": "Clear error guidance appears and chat remains fully usable.",
+      "requirementIds": ["EMO-001", "EMO-002", "ERR-001", "ERR-002", "A11Y-009", "PRIV-004"],
+      "layers": {
+        "unit": ["permission error maps to unavailable with text-only fallback"],
+        "integration": ["getUserMedia rejection does not disable message sending"],
+        "security": ["denial does not trigger repeated permission prompts or unintended egress"],
+        "accessibility": ["guidance and continue action are announced and focusable"],
+        "responsive": ["denied state and recovery actions wrap without clipping"],
+        "e2e": ["deny camera and complete a text-only conversation"]
+      }
+    },
+    {
+      "id": "AC-013",
+      "risk": "high",
+      "scenario": "Emotion model download fails.",
+      "expectedResult": "Expression status becomes unavailable; no random emotion is shown and chat continues.",
+      "requirementIds": ["EMO-001", "EMO-006", "EMO-007", "EMO-011", "PRIV-004"],
+      "layers": {
+        "unit": ["model failure resolves to unavailable without fabricated output"],
+        "integration": ["controlled asset failure preserves chat operation"],
+        "security": ["failure cannot fall back to an unapproved CDN or random detector"],
+        "accessibility": ["unavailable state and continuation guidance are exposed as text"],
+        "responsive": ["model failure panel remains usable at mobile sizes"],
+        "e2e": ["abort model download and continue sending messages"]
+      }
+    },
+    {
+      "id": "AC-014",
+      "risk": "critical",
+      "scenario": "User stops camera or signs out.",
+      "expectedResult": "All media tracks and inference timers stop immediately.",
+      "requirementIds": ["AUTH-010", "EMO-005", "PRIV-001"],
+      "layers": {
+        "unit": ["all lifecycle exit paths stop tracks and sampling timers"],
+        "integration": ["media spies verify stop and sign-out cleanup while registered data persists"],
+        "security": ["no media capture or inference continues after revocation"],
+        "accessibility": ["camera-off state is announced and focus returns predictably"],
+        "responsive": ["panel or sheet closes without obscuring the composer"],
+        "e2e": ["stop camera and sign out while capture is active"]
+      }
+    },
+    {
+      "id": "AC-015",
+      "risk": "critical",
+      "scenario": "Camera estimates sadness but user text is positive.",
+      "expectedResult": "Assistant follows the user's text and does not assert that the user is sad.",
+      "requirementIds": ["AI-006", "AI-007", "AI-008", "SAFE-003", "SAFE-009", "EMO-013", "EMO-014"],
+      "layers": {
+        "unit": ["prompt construction gives user text precedence over optional estimate"],
+        "integration": ["provider fixture receives uncertainty framing and returns no false sadness claim"],
+        "security": ["history injection cannot promote camera metadata to authoritative evidence"],
+        "accessibility": ["emotion display remains uncertain and uses no alarming state change"],
+        "responsive": ["camera context and contradictory conversation coexist without truncation"],
+        "e2e": ["send positive text with sad fixture and verify text-led response"]
+      }
+    },
+    {
+      "id": "AC-016",
+      "risk": "critical",
+      "scenario": "User expresses possible immediate self-harm intent.",
+      "expectedResult": "Safety policy response is concise, supportive, non-diagnostic, and directs the user toward immediate human/emergency help without claiming monitoring.",
+      "requirementIds": ["SAFE-001", "SAFE-002", "SAFE-003", "SAFE-004", "SAFE-005", "SAFE-006", "SAFE-007", "SAFE-008", "AI-006"],
+      "layers": {
+        "unit": ["router covers direct, indirect, ambiguous, joking, quoted, fictional, and third-person cases"],
+        "integration": ["reviewed resource catalog and model evaluation enforce the safety policy"],
+        "security": ["prompt injection cannot bypass routing or introduce unreviewed resources"],
+        "accessibility": ["concise actions and region selection are announced without alarm overload"],
+        "responsive": ["SAFE-01 actions remain visible and untruncated at 320px"],
+        "e2e": ["submit immediate-risk text and open the location-neutral region path"]
+      }
+    },
+    {
+      "id": "AC-017",
+      "risk": "critical",
+      "scenario": "User attempts to fetch another user's chat ID.",
+      "expectedResult": "Request is denied; no existence-sensitive private data is disclosed.",
+      "requirementIds": ["AI-010", "SEC-002", "SEC-003", "SEC-010", "ERR-003"],
+      "layers": {
+        "unit": ["authorization contract derives principal ownership rather than trusting payload ownerUid"],
+        "integration": ["Firestore rules and API deny owner, non-owner, and unauthenticated matrices correctly"],
+        "security": ["IDOR and enumeration attempts receive existence-insensitive responses"],
+        "accessibility": ["safe generic authorization error is understandable and actionable"],
+        "responsive": ["authorization error remains visible without hiding navigation"],
+        "e2e": ["use two accounts to attempt a forged chat read and write"]
+      }
+    },
+    {
+      "id": "AC-018",
+      "risk": "critical",
+      "scenario": "User enters HTML/script content.",
+      "expectedResult": "Content is displayed as inert text and does not execute.",
+      "requirementIds": ["MSG-010", "SEC-004", "SEC-008"],
+      "layers": {
+        "unit": ["message, title, and model-output render contracts accept text rather than HTML"],
+        "integration": ["malicious strings round-trip through persistence without execution semantics"],
+        "security": ["XSS payload corpus and CSP prevent script, event-handler, URL, and SVG execution"],
+        "accessibility": ["literal malicious text remains perceivable without corrupting semantics"],
+        "responsive": ["long hostile strings wrap without horizontal scrolling"],
+        "e2e": ["submit stored and reflected XSS payloads and assert no execution"]
+      }
+    },
+    {
+      "id": "AC-019",
+      "risk": "high",
+      "scenario": "Keyboard-only user completes sign-in and chat flow.",
+      "expectedResult": "Focus is visible, order is logical, drawer focus is managed, and all actions are operable.",
+      "requirementIds": ["AUTH-005", "A11Y-001", "A11Y-002", "A11Y-003", "A11Y-004", "A11Y-005", "A11Y-006", "A11Y-007", "A11Y-010"],
+      "layers": {
+        "unit": ["semantic control and overlay focus-state contracts"],
+        "integration": ["drawer, dialog, message log, and live-region focus behavior compose correctly"],
+        "security": ["protected content is not present in the DOM before auth restoration"],
+        "accessibility": ["manual keyboard and screen-reader completion of the full flow"],
+        "responsive": ["keyboard flow works in desktop shell and mobile drawer"],
+        "e2e": ["complete sign-in, send, navigation, and delete without a pointer"]
+      }
+    },
+    {
+      "id": "AC-020",
+      "risk": "high",
+      "scenario": "Viewport is 320 CSS pixels wide or browser zoom is 200%.",
+      "expectedResult": "No core content or action is lost; horizontal scrolling is not required for the main flow.",
+      "requirementIds": ["A11Y-001", "A11Y-002", "A11Y-008", "A11Y-010"],
+      "layers": {
+        "unit": ["content-limit and responsive-state contracts preserve required actions"],
+        "integration": ["full application state fixtures render without omitted controls"],
+        "security": ["security, privacy, and destructive confirmations are not hidden by reflow"],
+        "accessibility": ["manual zoom, reflow, text-spacing, and focus-obscuring review"],
+        "responsive": ["automated 320px and 200% coverage across every P0 flow"],
+        "e2e": ["complete all core flows at 320px and representative flows at 200% zoom"]
+      }
+    }
+  ]
+}

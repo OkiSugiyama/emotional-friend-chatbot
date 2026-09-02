@@ -1,0 +1,12 @@
+project_id: "01M0Z716GT7DXBMSXNVNHTSFT2"
+title: "Emotional Friend Chatbot"
+knowledge_path: "projects/personal_projects/emotional-friend-chatbot"
+contract_path: "projects/personal_projects/emotional-friend-chatbot/requirements.md"
+contract_revision: "2"
+dod_version: "1"
+integration_branch: "main"
+public_repository: null
+paths:
+  tasks: "docs/tasks"
+  handoffs: "docs/handoffs"
+  qa: "docs/qa"

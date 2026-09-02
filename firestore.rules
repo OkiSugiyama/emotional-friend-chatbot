@@ -1,0 +1,144 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedInAs(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function validUserCore(uid, createdAt) {
+      return request.resource.data.uid == uid
+        && (request.resource.data.displayName == null
+          || (request.resource.data.displayName is string
+            && request.resource.data.displayName.size() <= 100))
+        && request.resource.data.createdAt == createdAt
+        && request.resource.data.settings is map
+        && request.resource.data.settings.useEmotionContext is bool
+        && request.resource.data.settings.quotesVisible is bool
+        && request.resource.data.settings.locale is string
+        && request.resource.data.settings.locale.size() > 0
+        && request.resource.data.settings.locale.size() <= 35
+        && request.resource.data.consent is map
+        && (request.resource.data.consent.cameraNoticeVersion == null
+          || request.resource.data.consent.cameraNoticeVersion is string)
+        && (request.resource.data.consent.cameraNoticeAcceptedAt == null
+          || request.resource.data.consent.cameraNoticeAcceptedAt is timestamp);
+    }
+
+    function validUserCreate(uid) {
+      return validUserCore(uid, request.time)
+        && request.resource.data.keys().hasOnly([
+          'uid', 'displayName', 'createdAt', 'settings', 'consent'
+        ])
+        && request.resource.data.settings.keys().hasOnly([
+          'useEmotionContext', 'quotesVisible', 'locale'
+        ])
+        && request.resource.data.consent.keys().hasOnly([
+          'cameraNoticeVersion', 'cameraNoticeAcceptedAt'
+        ])
+        && request.resource.data.consent.cameraNoticeVersion == null
+        && request.resource.data.consent.cameraNoticeAcceptedAt == null;
+    }
+
+    function validConsentUpdate() {
+      return request.resource.data.consent == resource.data.consent
+        || (request.resource.data.consent.cameraNoticeVersion == null
+          && request.resource.data.consent.cameraNoticeAcceptedAt == null)
+        || (request.resource.data.consent.cameraNoticeVersion == 'camera-notice-v1'
+          && request.resource.data.consent.cameraNoticeAcceptedAt == request.time);
+    }
+
+    function validUserUpdate(uid) {
+      return validUserCore(uid, resource.data.createdAt)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['displayName', 'settings', 'consent'])
+        && request.resource.data.settings.diff(resource.data.settings).affectedKeys()
+          .hasOnly(['useEmotionContext', 'quotesVisible', 'locale'])
+        && request.resource.data.consent.diff(resource.data.consent).affectedKeys()
+          .hasOnly(['cameraNoticeVersion', 'cameraNoticeAcceptedAt'])
+        && validConsentUpdate();
+    }
+
+    function validChatCreate(uid) {
+      return request.resource.data.keys().hasOnly([
+          'schemaVersion', 'ownerUid', 'title', 'titleSource', 'createdAt',
+          'updatedAt', 'lastMessageAt', 'quoteId', 'quoteSnapshot'
+        ])
+        && request.resource.data.schemaVersion == 1
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 100
+        && request.resource.data.titleSource in ['default', 'generated', 'user']
+        && request.resource.data.ownerUid == uid
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.lastMessageAt == null
+        && request.resource.data.quoteId == null
+        && request.resource.data.quoteSnapshot == null;
+    }
+
+    function validChatUpdate(uid) {
+      return resource.data.ownerUid == uid
+        && request.resource.data.ownerUid == uid
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 100
+        && request.resource.data.titleSource in ['default', 'generated', 'user']
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['title', 'titleSource', 'updatedAt']);
+    }
+
+    function validMessageDeletion(uid) {
+      return resource.data.ownerUid == uid
+        && request.resource.data.ownerUid == uid
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.chatId == resource.data.chatId
+        && request.resource.data.clientRequestId == resource.data.clientRequestId
+        && request.resource.data.createdAt == resource.data.createdAt
+        && resource.data.status != 'deleted'
+        && request.resource.data.status == 'deleted'
+        && request.resource.data.text == ''
+        && request.resource.data.completedAt == request.time
+        && !('emotionContext' in request.resource.data)
+        && !('generationMetadata' in request.resource.data)
+        && !('safety' in request.resource.data)
+        && !('safetySupport' in request.resource.data)
+        && !('variant' in request.resource.data)
+        && !('errorCode' in request.resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly([
+            'text', 'status', 'completedAt', 'emotionContext', 'generationMetadata',
+            'safety', 'safetySupport', 'variant', 'errorCode'
+          ]);
+    }
+
+    match /users/{uid} {
+      allow read: if signedInAs(uid);
+      allow create: if signedInAs(uid) && validUserCreate(uid);
+      allow update: if signedInAs(uid) && validUserUpdate(uid);
+      allow delete: if false;
+
+      match /chats/{chatId} {
+        allow read: if signedInAs(uid);
+        allow create: if signedInAs(uid) && validChatCreate(uid);
+        allow update: if signedInAs(uid) && validChatUpdate(uid);
+        allow delete: if false;
+
+        match /messages/{messageId} {
+          allow read: if signedInAs(uid);
+          allow create, delete: if false;
+          allow update: if signedInAs(uid) && validMessageDeletion(uid);
+        }
+
+        match /idempotency/{requestId} {
+          allow read, write: if false;
+        }
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

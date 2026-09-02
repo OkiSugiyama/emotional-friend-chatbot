@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "taskId": "TASK-04",
+  "observedAtUtc": "2026-08-26T19:46:36Z",
+  "fixtureFamily": "TASK-04-SYNTHETIC",
+  "physicalCameraUseCount": 0,
+  "realDataArtifactCount": 0,
+  "rawBrowserCaptureCount": 0,
+  "browserCapability": {
+    "availableBrowserTypes": 0,
+    "runtimeObservationStatus": "unobserved",
+    "blocker": "No local browser backend was available to the in-app browser runtime."
+  },
+  "cases": [
+    {
+      "id": "TASK-04-SYNTHETIC-DEFAULT-PRECONSENT",
+      "status": "unobserved",
+      "observedAssertions": 0,
+      "summary": "Camera-off initial runtime, pre-consent model-load count, and pre-consent permission-request count were not observable without a local browser backend. Static defaults were not promoted to runtime pass evidence."
+    },
+    {
+      "id": "TASK-04-SYNTHETIC-VIDEO-ONLY",
+      "status": "observed",
+      "observedAssertions": 1,
+      "summary": "The deterministic adapter test observed one fake media request with video enabled and audio disabled. No physical device was addressed."
+    },
+    {
+      "id": "TASK-04-SYNTHETIC-LOCAL-DISPLAY-TONE-TOGGLE",
+      "status": "partial",
+      "observedAssertions": 3,
+      "summary": "Synthetic UI rendering observed a named local preview, an Estimated expression state, and a checked reply-tone switch. Runtime revocation while capture remains active was not observed."
+    },
+    {
+      "id": "TASK-04-SYNTHETIC-TRACK-LIFECYCLE",
+      "status": "partial",
+      "observedAssertions": 8,
+      "summary": "Fake media tests observed two synthetic tracks stopped on adapter stop, preview detachment, one track stopped on page hidden, sign-out ordering with camera stop before auth, and guest-expiry camera stop plus guest clear. User-stop, unmount, fatal-error, and pending-inference teardown were not independently observed."
+    },
+    {
+      "id": "TASK-04-SYNTHETIC-TIMER-NO-OVERLAP",
+      "status": "unobserved",
+      "observedAssertions": 0,
+      "summary": "The targeted suite did not instrument timer cancellation or concurrent inference count. Source control flow was not promoted to runtime pass evidence."
+    },
+    {
+      "id": "TASK-04-SYNTHETIC-UNAVAILABLE-FALLBACK",
+      "status": "partial",
+      "observedAssertions": 6,
+      "summary": "Synthetic tests observed remote model origin rejection before fake media request, no estimate fabrication for that rejection, unknown label fallback, low-confidence non-neutral fallback, and two-sample stability. Denied, unsupported, model-load error, no-face, and inference-error browser states were not independently observed end to end."
+    },
+    {
+      "id": "TASK-04-SYNTHETIC-TEXT-CONTINUATION",
+      "status": "partial",
+      "observedAssertions": 1,
+      "summary": "The camera-off synthetic UI fixture exposed an enabled text composer. Text continuation after denied, unsupported, model-failure, no-face, stop, hidden, sign-out, and expiry states was not observed in a browser."
+    },
+    {
+      "id": "TASK-04-SYNTHETIC-TEXT-PRECEDENCE",
+      "status": "unobserved",
+      "observedAssertions": 0,
+      "summary": "No executed packet test covered a positive-text plus estimated-sad provider or reply fixture. Traceability mapping alone was not treated as behavioral evidence."
+    },
+    {
+      "id": "TASK-04-SYNTHETIC-EGRESS-PERSISTENCE",
+      "status": "unobserved",
+      "observedAssertions": 0,
+      "summary": "Dynamic network and browser-storage observation could not run without a local browser backend. No zero-egress or zero-persistence runtime claim is made."
+    }
+  ],
+  "totals": {
+    "observed": 1,
+    "partial": 4,
+    "unobserved": 4,
+    "criticalFindings": 0,
+    "highFindings": 0,
+    "blockers": 1
+  }
+}

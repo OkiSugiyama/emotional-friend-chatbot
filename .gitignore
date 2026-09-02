@@ -1,0 +1,21 @@
+node_modules/
+dist/
+coverage/
+.vercel/
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Evaluated high-risk routing policy. Never commit the tuned trigger set.
+server/safety-policy.local.json
+
+# Evaluated synthetic safety corpus. Never commit the measured phrasings.
+tests/safety/corpus.local.json
+*.local
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+playwright-report/
+test-results/
+.DS_Store
